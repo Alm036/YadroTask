@@ -1,0 +1,53 @@
+---
+- name: Создание временной директории для сборки
+  tempfile:
+    state: directory
+    suffix: docker_build
+  register: build_dir
+
+- name: Копирование Dockerfile и script.py
+  copy:
+    src: "{{ item }}"
+    dest: "{{ build_dir.path }}/{{ item }}"
+  loop:
+    - Dockerfile
+    - script.py
+
+- name: Сборка Docker-образа
+  docker_image:
+    name: http-checker
+    source: build
+    build:
+      path: "{{ build_dir.path }}"
+      nocache: true
+    state: present
+
+- name: Запуск контейнера и получение логов
+  docker_container:
+    name: http-checker-container
+    image: http-checker
+    detach: false
+    cleanup: false
+    output_logs: true
+  register: container_run
+
+- name: Проверка кода завершения
+  fail:
+    msg: "Контейнер завершился с ошибкой (exit code: {{ container_info.container.State.ExitCode }})"
+  when: container_run.container.State.ExitCode != 0
+
+- name: Вывод логов контейнера
+  debug:
+    msg: |
+      === ЛОГИ КОНТЕЙНЕРА (docker logs) ===
+      {{ container_run.container.Output }}
+
+- name: Удаление контейнера
+  docker_container:
+    name: http-checker-container
+    state: absent
+
+- name: Очистка временной директории
+  file:
+    path: "{{ build_dir.path }}"
+    state: absent

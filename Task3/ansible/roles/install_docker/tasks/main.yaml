@@ -1,0 +1,36 @@
+---
+- name: Установка Docker
+  apt:
+    name:
+      - docker.io
+      - docker-buildx
+      - pip
+    state: present
+    update_cache: yes
+
+- name: Установка Docker SDK для Python
+  pip:
+    name: docker
+    state: present
+
+- name: Добавление пользователя в группу docker
+  user:
+    name: "{{ ansible_facts['user_id'] }}"
+    groups: docker
+    append: yes
+  notify: restart docker
+
+- name: Запуск и включение Docker
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Проверка установки Docker
+  command: docker --version
+  register: docker_version
+  changed_when: false
+
+- name: Вывод версии Docker
+  debug:
+    msg: "Docker установлен: {{ docker_version.stdout }}"

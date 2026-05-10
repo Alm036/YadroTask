@@ -28,3 +28,16 @@ docker run --name http-checker-container http-checker
 ```bash
 docker logs http-checker-container
 ```
+
+## Раздел 3
+
+Установка коллекции community.docker:
+```bash
+cd ansible
+ansible-galaxy collection install community.docker
+```
+
+Запуск playbook:
+```bash
+ansible-playbook playbook.yaml -i inventory.ini --ask-become-pass
+```

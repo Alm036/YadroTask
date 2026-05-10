@@ -1,0 +1,10 @@
+---
+- name: Полный цикл автоматизации
+  hosts: all
+  become: true
+  collections:
+    - community.docker
+
+  roles:
+    - install_docker
+    - verify_script
