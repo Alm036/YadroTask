@@ -17,9 +17,9 @@
   docker_image:
     name: http-checker
     source: build
+    force_source: true
     build:
       path: "{{ build_dir.path }}"
-      nocache: true
     state: present
 
 - name: Запуск контейнера и получение логов
