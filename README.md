@@ -33,7 +33,6 @@ docker logs http-checker-container
 
 Установка коллекции community.docker:
 ```bash
-cd ansible
 ansible-galaxy collection install community.docker
 ```
 
