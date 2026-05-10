@@ -11,7 +11,7 @@ STATUS_CODES = [103, 200, 301, 404, 500]
 
 
 def fetch_and_process(domain: str, status_code: int):
-    print(f">>> Запрашиваем https://{domain}/{status_code}")
+    print(f">>> Запрашивается https://{domain}/{status_code}")
 
     conn = http.client.HTTPSConnection(domain, timeout=10)
     try:
@@ -24,18 +24,18 @@ def fetch_and_process(domain: str, status_code: int):
             print(f"Status: {status}")
             print(f"Body: {body}")
         elif 400 <= status < 600:
-            raise Exception(f"Received error status code: {status}, Body: {body}")
+            raise Exception(f"Получен код статуса ошибки: {status}, Body: {body}")
         else:
-            print(f"Unexpected status: {status}, Body: {body}")
+            print(f"Необычный статус: {status}, Body: {body}")
 
     except Exception as e:
-        print(f"Exception occurred: {e}")
+        print(f"Возникла ошибка: {e}")
     finally:
         conn.close()
 
 
 def main():
-    print(f"Using domain: {DOMAIN}\n")
+    print(f"Используется домен: {DOMAIN}\n")
     for code in STATUS_CODES:
         fetch_and_process(DOMAIN, code)
 
